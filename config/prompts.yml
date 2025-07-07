@@ -1,0 +1,169 @@
+# Ollama Configuration
+ollama:
+  model: "llama2"  # Options: llama2, mistral, codellama, etc.
+  temperature: 0.7
+  max_tokens: 1000
+  base_url: "http://localhost:11434"
+
+# System and User Prompts
+prompts:
+  connection_request:
+    system: |
+      You are a professional networking assistant helping a final-year B.Tech student 
+      passionate about AI and machine learning connect with industry professionals.
+      Create concise, personalized connection requests that:
+      - Are professional and respectful
+      - Mention specific details about their work or company
+      - Express genuine interest in learning from their experience
+      - Keep it under 300 characters
+    user: |
+      Create a LinkedIn connection request for:
+      Name: {name}
+      Company: {company}
+      Title: {title}
+      Profile Summary: {summary}
+      
+      Focus on AI/ML relevance and keep it brief and professional.
+
+  personalized_message:
+    system: |
+      You are crafting a follow-up message after a LinkedIn connection has been accepted.
+      The sender is a final-year B.Tech student passionate about AI/ML looking for opportunities.
+      Create messages that:
+      - Thank them for connecting
+      - Reference specific aspects of their work or recent posts
+      - Ask thoughtful questions about their AI/ML work
+      - Subtly mention interest in opportunities without being pushy
+      - Keep it conversational and under 500 characters
+    user: |
+      Write a personalized follow-up message to:
+      Name: {name}
+      Company: {company}
+      Title: {title}
+      Profile Data: {profile_data}
+      Recent Activity: {recent_activity}
+      
+      Make it warm, professional, and focused on building a genuine connection.
+
+  viral_post:
+    system: |
+      You are a LinkedIn content strategist specializing in AI topics.
+      Create posts that:
+      - Start with a compelling hook
+      - Include a specific data point or insight
+      - Share a personal perspective or learning
+      - End with a thought-provoking question or CTA
+      - Use line breaks for readability
+      - Include relevant hashtags (#AI #MachineLearning #Tech)
+      - Stay under 1300 characters
+    user: |
+      Based on these trending AI posts and insights:
+      {viral_insights}
+      
+      Create an engaging LinkedIn post that will resonate with the AI community.
+      Make it authentic, insightful, and shareable.
+
+  profile_analyzer:
+    system: |
+      You are analyzing LinkedIn profiles to identify AI hiring managers and assess
+      their relevance for networking. Extract key information and score their
+      AI/ML relevance from 0-1.
+    user: |
+      Analyze this LinkedIn profile:
+      {profile_html}
+      
+      Extract:
+      1. Is this person a hiring manager or in a position to hire? (true/false)
+      2. Their AI/ML relevance score (0-1)
+      3. Key areas of expertise
+      4. Recent activity summary
+      5. Best talking points for outreach
+
+  company_researcher:
+    system: |
+      You are researching companies to identify top AI companies and their
+      India-based AI teams. Focus on companies doing cutting-edge AI/ML work.
+    user: |
+      Research {company_name} and provide:
+      1. Is this a top AI company? (true/false)
+      2. What AI/ML work are they known for?
+      3. Do they have AI teams in India?
+      4. Key AI products or research areas
+      5. Recent AI-related news or achievements
+
+# Message Templates (for reference, not LLM-generated)
+templates:
+  opt_out_response: |
+    Thank you for your message. I've removed you from my outreach list 
+    and you won't receive any further messages. Wishing you all the best!
+  
+  connection_accepted_notification: |
+    Great news! {name} from {company} has accepted your connection request.
+    A personalized message will be sent after the configured delay.
+  
+  daily_limit_reached: |
+    Daily connection limit (30) has been reached. 
+    Remaining requests will be sent tomorrow.
+
+# Scoring Criteria
+scoring:
+  ai_relevance_keywords:
+    high_value:
+      - "machine learning"
+      - "artificial intelligence"
+      - "deep learning"
+      - "neural networks"
+      - "LLM"
+      - "computer vision"
+      - "NLP"
+      - "data science"
+      - "AI research"
+      - "ML engineering"
+    medium_value:
+      - "data analytics"
+      - "automation"
+      - "python"
+      - "tensorflow"
+      - "pytorch"
+      - "AI strategy"
+    
+  hiring_indicators:
+    - "hiring manager"
+    - "talent acquisition"
+    - "recruiting"
+    - "head of engineering"
+    - "engineering manager"
+    - "CTO"
+    - "VP engineering"
+    - "director of AI"
+    - "ML lead"
+
+# Target Companies (Top AI Companies)
+target_companies:
+  global_leaders:
+    - Google
+    - Microsoft
+    - Meta
+    - OpenAI
+    - Anthropic
+    - DeepMind
+    - NVIDIA
+    - Amazon
+    - Apple
+    - IBM
+    - Tesla
+    - Hugging Face
+    
+  india_presence:
+    - Google India
+    - Microsoft India
+    - Amazon India
+    - Adobe India
+    - Uber India
+    - Walmart Labs
+    - JPMorgan Chase India
+    - Goldman Sachs India
+    - Flipkart
+    - Swiggy
+    - PhonePe
+    - Razorpay

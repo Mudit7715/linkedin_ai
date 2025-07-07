@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  # Ollama service for LLM
+  ollama:
+    image: ollama/ollama:latest
+    container_name: linkedin_ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    command: serve
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # Main automation service
+  automation:
+    build: .
+    container_name: linkedin_automation
+    depends_on:
+      - ollama
+    environment:
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - DATABASE_PATH=/app/data/linkedin_ai_outreach.db
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+      - ./config:/app/config
+      - ./logs:/app/logs
+    command: python -m linkedin_ai_outreach
+    restart: unless-stopped
+
+  # Web dashboard
+  dashboard:
+    build: .
+    container_name: linkedin_dashboard
+    depends_on:
+      - ollama
+      - automation
+    ports:
+      - "8501:8501"
+    environment:
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - DATABASE_PATH=/app/data/linkedin_ai_outreach.db
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+      - ./config:/app/config
+    command: streamlit run ui/dashboard.py --server.port=8501 --server.address=0.0.0.0
+    restart: unless-stopped
+
+  # Optional: Selenium Grid for headless browser automation
+  selenium:
+    image: selenium/standalone-chrome:latest
+    container_name: linkedin_selenium
+    ports:
+      - "4444:4444"
+      - "7900:7900"  # VNC port for debugging
+    environment:
+      - SE_NODE_MAX_SESSIONS=5
+      - SE_NODE_SESSION_TIMEOUT=86400
+    shm_size: 2gb
+    restart: unless-stopped
+
+volumes:
+  ollama_data:
+    driver: local
+
+networks:
+  default:
+    name: linkedin_network
